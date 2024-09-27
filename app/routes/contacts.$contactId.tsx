@@ -11,10 +11,13 @@ import invariant from 'tiny-invariant';
 //? Loader
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.contactId, 'Missing Contact Params');
+
   const contact = await getContact(params.contactId);
+
   if (!contact) {
     throw new Response('Not Found', { status: 404 });
   }
+
   return json({ contact });
 };
 
