@@ -17,10 +17,15 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   return json({ contact });
 };
 export const action = async ({ params, request }: ActionFunctionArgs) => {
-  console.log('request', request);
+  //invariant will throw an Error if the condition is falsey
   invariant(params.contactId, 'Missing contactId param');
+
+  //request is the plain form request and we extraxt the form data from it
   const formData = await request.formData();
+
+  // Convert FormData to an object
   const updates = Object.fromEntries(formData);
+
   await updateContact(params.contactId, updates);
   return redirect(`/contacts/${params.contactId}`);
 };
