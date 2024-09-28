@@ -71,7 +71,12 @@ export default function App() {
           <h1>Remix Contacts</h1>
           <div>
             <Form
-              onChange={(event) => submit(event.currentTarget)}
+              onChange={(event) => {
+                const isFirstSearch = q === null;
+                submit(event.currentTarget, {
+                  replace: !isFirstSearch,
+                });
+              }}
               id="search-form"
               role="search"
             >
