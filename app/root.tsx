@@ -12,6 +12,7 @@ import {
   useLoaderData,
   ScrollRestoration,
   useSubmit,
+  useRouteError,
 } from '@remix-run/react';
 import { createEmptyContact, getContacts } from './data';
 import appStylesHref from './app.css?url';
@@ -22,18 +23,43 @@ export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: appStylesHref },
 ];
 
-//* GET
+// //* Loader (GET)
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const q = url.searchParams.get('q');
   const contacts = await getContacts(q);
+
+  // throw an error if something goes wrong during data fetching
+
   return json({ contacts, q });
 };
-//* POST
+
+//* Action (POST)
 export const action = async () => {
   const contact = await createEmptyContact();
   return redirect(`/contacts/${contact.id}/edit`);
 };
+
+//* Error Boundary
+export function ErrorBoundary() {
+  console.log('first ErrorBoundary Runs');
+  const error = useRouteError();
+  console.error(error);
+  return (
+    <html lang="en">
+      <head>
+        <title>Oh no!</title>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        {/* add the UI you want your users to see */}
+        <div className="error-div">this is error here</div>
+        <Scripts />
+      </body>
+    </html>
+  );
+}
 
 //? Component
 export default function App() {

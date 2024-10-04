@@ -395,3 +395,13 @@ i {
   justify-content: center;
   width: 100%;
 }
+
+/* _____________________________ My Styles ________________________________ */
+
+.error-div {
+  background: red;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px auto;
+}
