@@ -4,7 +4,12 @@ import type { ContactRecord } from '../data';
 import type { LoaderFunctionArgs, ActionFunctionArgs } from '@remix-run/node';
 
 import { json } from '@remix-run/node';
-import { Form, useFetcher, useLoaderData } from '@remix-run/react';
+import {
+  Form,
+  useFetcher,
+  useLoaderData,
+  useRouteError,
+} from '@remix-run/react';
 import { getContact, updateContact } from '../data';
 import invariant from 'tiny-invariant';
 
@@ -18,6 +23,8 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     throw new Response('Not Found', { status: 404 });
   }
 
+  // throw new Response('Test', { status: 400 });
+
   return json({ contact });
 };
 
@@ -30,6 +37,14 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
   });
 };
 
+//? Error Boundary
+export function ErrorBoundary() {
+  console.log('first ErrorBoundary Runs');
+  const error = useRouteError();
+  console.error(error);
+  return <div className="error-div">Can not find the contact </div>;
+}
+
 //? Component
 export default function Contact() {
   const { contact } = useLoaderData<typeof loader>();
@@ -38,33 +53,33 @@ export default function Contact() {
     <div id="contact">
       <div>
         <img
-          alt={`${contact.first} ${contact.last} avatar`}
-          key={contact.avatar}
-          src={contact.avatar}
+          alt={`${contact?.first} ${contact?.last} avatar`}
+          key={contact?.avatar}
+          src={contact?.avatar}
         />
       </div>
 
       <div>
         <h1>
-          {contact.first || contact.last ? (
+          {contact?.first || contact?.last ? (
             <>
-              {contact.first} {contact.last}
+              {contact?.first} {contact?.last}
             </>
           ) : (
             <i>No Name</i>
           )}{' '}
-          <Favorite contact={contact} />
+          <Favorite contact={contact || undefined} />
         </h1>
 
-        {contact.twitter ? (
+        {contact?.twitter ? (
           <p>
-            <a href={`https://twitter.com/${contact.twitter}`}>
-              {contact.twitter}
+            <a href={`https://twitter.com/${contact?.twitter}`}>
+              {contact?.twitter}
             </a>
           </p>
         ) : null}
 
-        {contact.notes ? <p>{contact.notes}</p> : null}
+        {contact?.notes ? <p>{contact?.notes}</p> : null}
 
         <div>
           <Form action="edit">
@@ -98,7 +113,7 @@ const Favorite: FunctionComponent<{
 
   const favorite = fetcher.formData
     ? fetcher.formData.get('favorite') === 'true'
-    : contact.favorite;
+    : contact?.favorite;
 
   return (
     <fetcher.Form method="post">
