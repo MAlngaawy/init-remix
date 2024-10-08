@@ -6,6 +6,7 @@ import { Form, useLoaderData, useNavigate } from '@remix-run/react';
 import invariant from 'tiny-invariant';
 
 import { getContact, updateContact } from '../data';
+import { db } from '~/db.server';
 
 //? Exports
 export const loader = async ({ params }: LoaderFunctionArgs) => {
@@ -27,6 +28,9 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
   const updates = Object.fromEntries(formData);
 
   await updateContact(params.contactId, updates);
+  await db.influncer.create({
+    data: { ...updates },
+  });
   return redirect(`/contacts/${params.contactId}`);
 };
 
