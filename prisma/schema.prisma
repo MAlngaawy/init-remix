@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["mongodb"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Influncer {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  first     String   
+  last      String   
+  twitter   String?  
+  avatar    String?  
+  notes     String?  
+  favorite  Boolean @default(false)
+}
+
+model User {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name  String
+  email String @unique
+}
+
+model Post {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title  String
+  body String
+}
+
