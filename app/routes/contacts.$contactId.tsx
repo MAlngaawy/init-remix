@@ -1,6 +1,6 @@
 //? Imports
 import type { FunctionComponent } from 'react';
-import type { ContactRecord } from '../data';
+// import type { ContactRecord } from '../data';
 import type { LoaderFunctionArgs, ActionFunctionArgs } from '@remix-run/node';
 
 import { json } from '@remix-run/node';
@@ -12,20 +12,27 @@ import {
 } from '@remix-run/react';
 import { getContact, updateContact } from '../data';
 import invariant from 'tiny-invariant';
+import { db } from '~/db.server';
+import { ContactType } from '~/types/mainTypes';
 
 //? Loader
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.contactId, 'Missing Contact Params');
 
-  const contact = await getContact(params.contactId);
+  const realContact = await db.influncer.findFirst({
+    where: {
+      id: params.contactId,
+    },
+  });
+  const fakeContacts = await getContact(params.contactId);
 
-  if (!contact) {
+  if (!realContact && !fakeContacts) {
     throw new Response('Not Found', { status: 404 });
   }
 
   // throw new Response('Test', { status: 400 });
 
-  return json({ contact });
+  return json({ realContact, fakeContacts });
 };
 
 //? Action
@@ -47,7 +54,12 @@ export function ErrorBoundary() {
 
 //? Component
 export default function Contact() {
-  const { contact } = useLoaderData<typeof loader>();
+  const { fakeContacts, realContact } = useLoaderData<typeof loader>();
+
+  console.log('fakeContacts', fakeContacts);
+  console.log(', realContact', realContact);
+
+  const contact = realContact || fakeContacts || ({} as ContactType);
 
   return (
     <div id="contact">
@@ -55,7 +67,7 @@ export default function Contact() {
         <img
           alt={`${contact?.first} ${contact?.last} avatar`}
           key={contact?.avatar}
-          src={contact?.avatar}
+          src={contact?.avatar || 'No Image'}
         />
       </div>
 
@@ -67,8 +79,8 @@ export default function Contact() {
             </>
           ) : (
             <i>No Name</i>
-          )}{' '}
-          <Favorite contact={contact || undefined} />
+          )}
+          <Favorite contact={contact} />
         </h1>
 
         {contact?.twitter ? (
@@ -107,7 +119,7 @@ export default function Contact() {
 }
 
 const Favorite: FunctionComponent<{
-  contact: Pick<ContactRecord, 'favorite'>;
+  contact: Pick<ContactType, 'favorite'>;
 }> = ({ contact }) => {
   const fetcher = useFetcher();
 

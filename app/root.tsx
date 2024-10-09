@@ -14,9 +14,10 @@ import {
   useSubmit,
   useRouteError,
 } from '@remix-run/react';
-import { createEmptyContact, getContacts } from './data';
+// import { getContacts } from './data';
 import appStylesHref from './app.css?url';
 import { useEffect, useState } from 'react';
+import { db } from './db.server';
 
 //? Exports
 export const links: LinksFunction = () => [
@@ -27,7 +28,7 @@ export const links: LinksFunction = () => [
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const q = url.searchParams.get('q');
-  const contacts = await getContacts(q);
+  const contacts = await db.influncer.findMany();
 
   // throw an error if something goes wrong during data fetching
 
@@ -36,8 +37,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 //* Action (POST)
 export const action = async () => {
-  const contact = await createEmptyContact();
-  return redirect(`/contacts/${contact.id}/edit`);
+  // const contact = await createEmptyContact();
+  return redirect(`/contacts/add`);
 };
 
 //* Error Boundary
