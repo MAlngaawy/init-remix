@@ -8,12 +8,7 @@ import type {
 } from '@remix-run/node';
 
 import { json } from '@remix-run/node';
-import {
-  Form,
-  useFetcher,
-  useLoaderData,
-  useRouteError,
-} from '@remix-run/react';
+import { Form, useFetcher, useLoaderData } from '@remix-run/react';
 import { getContact, updateContact } from '../data';
 import invariant from 'tiny-invariant';
 import { db } from '~/db.server';
@@ -50,9 +45,6 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 
 //? Error Boundary
 export function ErrorBoundary() {
-  console.log('first ErrorBoundary Runs');
-  const error = useRouteError();
-  console.error(error);
   return <div className="error-div">Can not find the contact </div>;
 }
 
@@ -73,9 +65,6 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 //? Component
 export default function Contact() {
   const { fakeContacts, realContact } = useLoaderData<typeof loader>();
-
-  console.log('fakeContacts', fakeContacts);
-  console.log(', realContact', realContact);
 
   const contact = realContact || fakeContacts || ({} as ContactType);
 

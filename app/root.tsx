@@ -16,7 +16,6 @@ import {
   useLoaderData,
   ScrollRestoration,
   useSubmit,
-  useRouteError,
 } from '@remix-run/react';
 // import { getContacts } from './data';
 import appStylesHref from './app.css?url';
@@ -80,9 +79,6 @@ export const action = async () => {
 
 //* Error Boundary
 export function ErrorBoundary() {
-  console.log('first ErrorBoundary Runs');
-  const error = useRouteError();
-  console.error(error);
   return (
     <html lang="en">
       <head>
