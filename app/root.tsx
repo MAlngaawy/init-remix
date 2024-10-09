@@ -1,5 +1,9 @@
 //? import
-import type { LinksFunction, LoaderFunctionArgs } from '@remix-run/node';
+import type {
+  LinksFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import {
   Meta,
@@ -24,11 +28,44 @@ export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: appStylesHref },
 ];
 
+//? Meta tags
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Very cool app | Remix' },
+    {
+      property: 'og:title',
+      content: 'Very cool app',
+    },
+    {
+      name: 'description',
+      content: 'This app is the best',
+    },
+  ];
+};
+
 // //* Loader (GET)
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
-  const q = url.searchParams.get('q');
-  const contacts = await db.influncer.findMany();
+  const q = url.searchParams.get('q') || '';
+  const contacts = await db.influncer.findMany({
+    where: {
+      OR: [
+        {
+          first: {
+            contains: q,
+            mode: 'insensitive', // Optional: to make it case-insensitive
+          },
+        },
+        {
+          last: {
+            contains: q,
+            mode: 'insensitive',
+          },
+        },
+        // Add other fields you want to filter by
+      ],
+    },
+  });
 
   // throw an error if something goes wrong during data fetching
 

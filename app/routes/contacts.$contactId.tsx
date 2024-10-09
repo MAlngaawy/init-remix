@@ -1,7 +1,11 @@
 //? Imports
 import type { FunctionComponent } from 'react';
 // import type { ContactRecord } from '../data';
-import type { LoaderFunctionArgs, ActionFunctionArgs } from '@remix-run/node';
+import type {
+  LoaderFunctionArgs,
+  ActionFunctionArgs,
+  MetaFunction,
+} from '@remix-run/node';
 
 import { json } from '@remix-run/node';
 import {
@@ -51,6 +55,20 @@ export function ErrorBoundary() {
   console.error(error);
   return <div className="error-div">Can not find the contact </div>;
 }
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [
+    { title: data?.realContact?.first + ' ' + data?.realContact?.last },
+    {
+      property: 'og:title',
+      content: 'Very cool app',
+    },
+    {
+      name: 'description',
+      content: 'This app is the best',
+    },
+  ];
+};
 
 //? Component
 export default function Contact() {
