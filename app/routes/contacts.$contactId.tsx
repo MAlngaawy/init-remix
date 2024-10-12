@@ -48,7 +48,11 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 
 //? Error Boundary
 export function ErrorBoundary() {
-  return <div className="error-div">Can not find the contact </div>;
+  return (
+    <div className="error-div">
+      <p>Sorray Somthing went wrong</p>
+    </div>
+  );
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
@@ -95,7 +99,11 @@ export default function Contact() {
 
         {contact?.twitter ? (
           <p>
-            <a href={`https://twitter.com/${contact?.twitter}`}>
+            <a
+              target="_blank"
+              href={`https://twitter.com/${contact?.twitter}`}
+              rel="noreferrer"
+            >
               {contact?.twitter}
             </a>
           </p>
