@@ -9,7 +9,7 @@ import type {
 
 import { json } from '@remix-run/node';
 import { Form, useFetcher, useLoaderData } from '@remix-run/react';
-import { getContact, updateContact } from '../data';
+import { getContact } from '../data';
 import invariant from 'tiny-invariant';
 import { db } from '~/db.server';
 import { ContactType } from '~/types/mainTypes';
@@ -38,8 +38,11 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 export const action = async ({ params, request }: ActionFunctionArgs) => {
   invariant(params.contactId, 'Missing contactId param');
   const formData = await request.formData();
-  return updateContact(params.contactId, {
-    favorite: formData.get('favorite') === 'true',
+  return db.influncer.update({
+    data: { favorite: formData.get('favorite') === 'true' },
+    where: {
+      id: params.contactId,
+    },
   });
 };
 
