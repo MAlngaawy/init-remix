@@ -37,4 +37,4 @@ jobs:
 
       # Step 5: Optionally, you can run type-checking if you're using TypeScript
       - name: Run TypeScript type-check
-        run: npm run type-check
+        run: npm run typecheck
