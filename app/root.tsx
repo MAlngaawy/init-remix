@@ -18,12 +18,14 @@ import {
   useSubmit,
 } from '@remix-run/react';
 // import { getContacts } from './data';
-import appStylesHref from './app.css?url';
 import { useEffect, useState } from 'react';
 import { db } from './db.server';
+import appStylesHref from './app.css?url';
+import stylesheet from '~/tailwind.css?url';
 
 //? Exports
 export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: stylesheet },
   { rel: 'stylesheet', href: appStylesHref },
 ];
 
@@ -42,7 +44,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-// //* Loader (GET)
+//? Loader (GET)
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const q = url.searchParams.get('q') || '';
@@ -71,13 +73,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return json({ contacts, q });
 };
 
-//* Action (POST)
+//? Action (POST)
 export const action = async () => {
   // const contact = await createEmptyContact();
   return redirect(`/contacts/add`);
 };
 
-//* Error Boundary
+//? Error Boundary
 export function ErrorBoundary() {
   return (
     <html lang="en">

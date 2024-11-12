@@ -5,7 +5,6 @@ import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import invariant from 'tiny-invariant';
 
-// import { updateContact } from '../data';
 import { db } from '~/db.server';
 import ContactsCrudform from '~/Components/ContactsCrudform';
 import { ContactType } from '~/types/mainTypes';
@@ -13,7 +12,6 @@ import { ContactType } from '~/types/mainTypes';
 //? Exports
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.contactId, 'Missing contactId param');
-  // const contact = await getContact(params.contactId);
   const contact = await db.influncer.findFirst({
     where: {
       id: params.contactId,

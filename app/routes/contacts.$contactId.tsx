@@ -14,7 +14,7 @@ import invariant from 'tiny-invariant';
 import { db } from '~/db.server';
 import { ContactType } from '~/types/mainTypes';
 
-//? Loader
+//? Loader (Fetcher)
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.contactId, 'Missing Contact Params');
 
@@ -34,7 +34,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   return json({ realContact, fakeContacts });
 };
 
-//? Action
+//? Action (Data Mutation)
 export const action = async ({ params, request }: ActionFunctionArgs) => {
   invariant(params.contactId, 'Missing contactId param');
   const formData = await request.formData();
@@ -54,20 +54,6 @@ export function ErrorBoundary() {
     </div>
   );
 }
-
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return [
-    { title: data?.realContact?.first + ' ' + data?.realContact?.last },
-    {
-      property: 'og:title',
-      content: 'Very cool app',
-    },
-    {
-      name: 'description',
-      content: 'This app is the best',
-    },
-  ];
-};
 
 //? Component
 export default function Contact() {
@@ -118,7 +104,7 @@ export default function Contact() {
 
           <Form
             action="destroy"
-            method="post"
+            method="delete"
             onSubmit={(event) => {
               const response = confirm(
                 'Please confirm you want to delete this record.'
@@ -136,6 +122,22 @@ export default function Contact() {
   );
 }
 
+//* Meta Tags
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [
+    { title: data?.realContact?.first + ' ' + data?.realContact?.last },
+    {
+      property: 'og:title',
+      content: 'Very cool app',
+    },
+    {
+      name: 'description',
+      content: 'This app is the best',
+    },
+  ];
+};
+
+//* Helper Component
 const Favorite: FunctionComponent<{
   contact: Pick<ContactType, 'favorite'>;
 }> = ({ contact }) => {
