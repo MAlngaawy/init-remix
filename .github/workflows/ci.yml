@@ -1,12 +1,16 @@
 name: CI for Remix App
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+#! This means any push will run the checks
+on: [push]
+
+#! run this to make the checks runs in a spicific branch
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
 
 jobs:
   test:
